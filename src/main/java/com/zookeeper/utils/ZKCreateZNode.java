@@ -29,7 +29,8 @@ public class ZKCreateZNode {
 		
       try {
          conn = new ZKConnection();
-         zk = conn.connect("localhost");
+         conn.setHost(Propiedades.leePropiedad("host"));
+         zk = conn.connect();
          create(path, data); // Create the data to the specified path
          conn.close();
       } catch (Exception e) {

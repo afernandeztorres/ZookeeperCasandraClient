@@ -24,7 +24,8 @@ public class ZKSetData {
 		
       try {
          conn = new ZKConnection();
-         zk = conn.connect("localhost");
+         conn.setHost(Propiedades.leePropiedad("host"));
+         zk = conn.connect();
          update(path, data); // Update znode data to the specified path
       } catch(Exception e) {
          System.out.println(e.getMessage());

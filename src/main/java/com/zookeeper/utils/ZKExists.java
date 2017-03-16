@@ -19,7 +19,8 @@ public class ZKExists {
 			
       try {
          conn = new ZKConnection();
-         zk = conn.connect("localhost");
+         conn.setHost(Propiedades.leePropiedad("host"));
+         zk = conn.connect();
          Stat stat = znode_exists(path); // Stat checks the path of the znode
 				
          if(stat != null) {

@@ -23,7 +23,8 @@ public class ZKGetData {
 		
       try {
          conn = new ZKConnection();
-         zk = conn.connect("localhost");
+         conn.setHost(Propiedades.leePropiedad("host"));
+         zk = conn.connect();
          Stat stat = znode_exists(path);
 			
          if(stat != null) {

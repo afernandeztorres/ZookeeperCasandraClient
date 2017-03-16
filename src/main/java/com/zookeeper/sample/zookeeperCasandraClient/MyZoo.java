@@ -21,8 +21,9 @@ public class MyZoo
 	private ZKConnection conn;
 	private Stat stat;
 	
-    public void printChildren(String path) throws InterruptedException{
-		List<String> nodos;
+    public int printChildren(String path) throws InterruptedException{
+		int res=0;
+    	List<String> nodos;
 		try {
 			stat = zoo.exists(path, true);
 			if (stat!=null) {
@@ -30,52 +31,71 @@ public class MyZoo
 				for (int i=0; i<nodos.size();i++){
 					System.out.println(nodos.get(i));
 				}
+				res = 0;
 			} else {
 				System.out.println("No existen nodos disponibles");
+				res = 1;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return res;
     }
     
 
 
-	public void createNode(String path, String info) throws InterruptedException{
+	public int createNode(String path, String info) throws InterruptedException{
+		int res =0;
 		try {
 			stat = zoo.exists(path, true);
 			if (stat==null) {
 				zoo.create(path, info.getBytes(),ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);
 				System.out.println("Se ha creado el nodo" + path +", con la información: " + info);
+				res=0;
 			}else{
 				System.out.println("No se puede crear el nodo, ya existe");
+				res=1;
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return res;
     }
 	
-	public void deleteNode(String path) throws InterruptedException{
+	public int deleteNode(String path) throws InterruptedException{
+		int res=0;
 		try {
-			zoo.delete(path,zoo.exists(path,true).getVersion());
-			System.out.println("Se ha eliminado el nodo" + path);
+			stat = zoo.exists(path, true);
+			if (stat!=null) {
+				zoo.delete(path,zoo.exists(path,true).getVersion());
+				System.out.println("Se ha eliminado el nodo" + path);
+				res = 0;
+			} else {
+				System.out.println("No existe el nodo: " + path);
+				res = 1;
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return res;
     }
 	
-	public void existsNode(String path){
+	public boolean existsNode(String path){
+		boolean res=false;
 		try {
 			 stat = zoo.exists(path, true); // Stat checks the path of the znode
 	         if(stat != null) {
 	            System.out.println("El nodo: "+ path + " existe, versión: " + stat.getVersion());
+	            res=true;
 	         } else {
 	            System.out.println("No se ha encontrado el nodo: " + path);
 	         }
 		}catch (Exception e){
 			e.printStackTrace();
 		}
+		return res;
 	}
     
     public MyZoo() throws IOException, InterruptedException{
